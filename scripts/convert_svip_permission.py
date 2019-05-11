@@ -125,9 +125,6 @@ def main():
         if advisor != '高盛华':
             continue
 
-        if username not in ['xuyy']:
-            continue
-
         exist_compute_node_list = []
         for node_info in user_info['permission']:
             node_name = node_info['name']
