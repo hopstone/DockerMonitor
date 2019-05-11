@@ -65,7 +65,7 @@ def main():
 
         except Exception as e:
             print(e)
-            print('mysql rollback')
+            print('sqlite rollback')
             conn.rollback()
 
         time.sleep(0.5)

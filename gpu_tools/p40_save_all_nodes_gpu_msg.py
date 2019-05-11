@@ -18,7 +18,8 @@ DB_HOST = '10.19.124.11'
 DB_USERNAME = 'root'
 DB_PASSWOED = 'piaozx123'
 DB_NAME = 'docker'
-WATCH_NODES_ID_LIST = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28]
+# WATCH_NODES_ID_LIST = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28]
+WATCH_NODES_ID_LIST = [7, 8, 9, 10, 11, 12, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28]
 
 
 # WATCH_NODES_ID_LIST = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
@@ -74,7 +75,6 @@ def main():
 
         try:
             node_gpu_msg_list = get_node_msg_list(sqlite_conn)
-            print(node_gpu_msg_list[0])
             check_and_restart_pbs_task()
 
             print('-' * 20 + 'start' + '-' * 20)

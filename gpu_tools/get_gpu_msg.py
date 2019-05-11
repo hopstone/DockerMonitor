@@ -5,7 +5,9 @@
 
 import os
 import json
-from multiprocessing import Pool
+import multiprocessing
+import math
+import datetime
 
 
 def get_user_name_and_run_time(pid):
@@ -32,7 +34,6 @@ def get_user_name_and_run_time(pid):
 
     return user_name, run_time
 
-
 def main():
     gpu_msg_list = os.popen("/public/anaconda3/bin/gpustat -p -u --json").read()
     gpu_msg_list = json.loads(gpu_msg_list)
@@ -42,6 +43,28 @@ def main():
             user_name, run_time = get_user_name_and_run_time(process['pid'])
             process['username'] = user_name
             process['runtime'] = run_time
+
+    cpu_info = os.popen("iostat -c | tail -n 2").read()
+    user, nice, system, iowait, steal, idle = map(lambda x: float(x), cpu_info.split())
+
+    cpu_utils = 100 - idle
+    cpu_num = multiprocessing.cpu_count()
+    cpu_msg = '%.2f%% [%d/%d]' % (cpu_utils, math.ceil(cpu_num * cpu_utils * 0.01), cpu_num)
+
+    _, total, used, _, _, _, available = os.popen('''free -h | head -n 2 | tail -n 1''').read().split()
+    memory_msg = '%s/%s' % (used, total)
+
+    gpu_msg_list['cpu_msg'] = cpu_msg
+    gpu_msg_list['memory_msg'] = memory_msg
+
+    # convert query time format
+    query_time = gpu_msg_list['query_time']
+    query_time = query_time[:query_time.find('.')]
+    query_time = datetime.datetime.strptime(query_time, "%Y-%m-%dT%H:%M:%S")
+    query_time = query_time.strftime('%Y-%m-%d %H:%M:%S')
+    gpu_msg_list['query_time'] = query_time
+
+
 
     print(json.dumps(gpu_msg_list, ensure_ascii=False))
 
