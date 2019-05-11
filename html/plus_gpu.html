@@ -163,9 +163,11 @@
             <li>
                 <a href="/gpu">GPU Status</a>
             </li>
+            {% if cur_user != None%}
             <li>
                 <a href="/p40_gpu">P40 GPU Status</a>
             </li>
+            {% end %}
             <li>
                 <a href="/svip_gpu">SVIP GPU Status</a>
             </li>
@@ -190,12 +192,13 @@
 
 <div class="container">
     <div class="row clearfix">
-        <h2>SVIP AI Cluster (10.19.124.11)</h2>
+        <h2>PLUS AI Cluster (10.19.124.11)</h2>
 
         {% for node_gpu_msg in node_gpu_msg_list %}
 
         <h4>{% raw node_gpu_msg['hostname'] %}
             <small>{% raw node_gpu_msg['query_time'] %}</small>
+            (CPU:{% raw node_gpu_msg['cpu_msg'] %} MEM:{% raw node_gpu_msg['memory_msg'] %})
         </h4>
 
         <table class="table table-striped table-condensed">
