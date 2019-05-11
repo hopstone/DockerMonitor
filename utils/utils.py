@@ -1,5 +1,7 @@
 import os
 import pathlib
+
+
 class ContainerAdditionStr:
 
     def __init__(self, node_name, advisor, cname):
@@ -11,17 +13,24 @@ class ContainerAdditionStr:
         }
         self.username = cname
 
-
     def get_node_addition_str(self):
         addition_str = ""
         banned_users = ['yanshp']
+        '''
+        set motd 
+        '''
         if self.username not in banned_users:
             if self.node_name == 'admin':
                 addition_str = ' -v /public/motd/admin_motd:/etc/motd:ro '
             else:
                 addition_str = ' -v /public/motd/node_motd:/etc/motd:ro '
+
+        '''
+        restrict admin memory usage
+        '''
         if self.node_name == 'admin':
-            addition_str +=  " -m 4G --memory-swap 8G --memory-reservation 2G "
+            addition_str += " -m 4G --memory-swap 8G --memory-reservation 2G "
+
         return addition_str
 
     def get_advisor_addition_str(self):
@@ -32,13 +41,17 @@ class ContainerAdditionStr:
             pathlib.Path(group_dir).mkdir(parents=True, exist_ok=True)
             pathlib.Path(readonly_dir).mkdir(parents=True, exist_ok=True)
             addition_str += f' -v {group_dir}:/group ' \
-                           f' -v {readonly_dir}:/group/readonly:ro '
+                f' -v {readonly_dir}:/group/readonly:ro '
         return addition_str
 
     def get_user_addition_str(self):
         addition_str = ""
         if self.username == "zhangxy" and self.node_name == "admin":
             addition_str += " -v /public/docker/huangshy/root/huangshy/:/root/huangshy "
+        elif self.username == "piaozx":
+            addition_str += " -v /p300/docker/liuwen:/p300_liuwen "
+            addition_str += " -v /p300/docker/xuyy:/p300_xuyy "
+
         return addition_str
 
     def get_additional_str(self):
