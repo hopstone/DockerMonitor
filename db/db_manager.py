@@ -113,7 +113,6 @@ class DatabaseManager:
         self.commit()
         return user_info_list
 
-
     def get_user_detail_info_by_uid(self, uid):
         cursor = self.get_cursor()
         cursor.execute(
@@ -150,7 +149,6 @@ class DatabaseManager:
 
         self.commit()
         return user_info
-
 
     def get_user_info_by_uid(self, uid):
         cursor = self.get_cursor()
@@ -259,8 +257,14 @@ class DatabaseManager:
     def get_node_msg_list(self):
         cursor = self.get_cursor()
 
-        cursor.execute('''select node_gpu_msg from docker.gpu where node_gpu_msg <> "" ''')
+        # cursor.execute('''select node_gpu_msg from docker.gpu where node_gpu_msg <> "" ''')
+
+        cursor.execute("select node_gpu_msg from gpu," 
+                    "(select node_id, max(query_time) as max_query_time from gpu where query_time <> '0000-00-00 00:00:00' GROUP BY node_id)b "
+                    "where gpu.node_id = b.node_id and gpu.query_time = max_query_time")
+
         node_msg_list = cursor.fetchall()
+
         node_msg_list = list(map(lambda x: json.loads(x[0]), node_msg_list))
 
         self.commit()
@@ -276,44 +280,32 @@ class DatabaseManager:
         self.commit()
         return node_msg_list
 
-    def get_courses_node_msg_list(self):
-        cursor = self.get_cursor()
-
-        cursor.execute('''select node_gpu_msg from docker.gpu where node_gpu_msg <> "" ''')
-        node_msg_list = cursor.fetchall()
-        node_msg_list = list(map(lambda x: json.loads(x[0]), node_msg_list))
-
-        self.commit()
-        selected_node = [12, 13, 23, 24, 25]
-        return [node_msg_list[node_id] for node_id in selected_node]
-
     def get_plus_node_msg_list(self):
-        cursor = self.get_cursor()
-
-        cursor.execute('''select node_gpu_msg from docker.gpu where node_gpu_msg <> "" ''')
-        node_msg_list = cursor.fetchall()
-        node_msg_list = list(map(lambda x: json.loads(x[0]), node_msg_list))
-
-        self.commit()
-        selected_node_plus = [2,3,10,11,5,20,21,29,32,33]
+        node_msg_list = self.get_node_msg_list()
+        selected_node_plus = [2, 3, 10, 11, 5, 20, 21, 29, 32, 33]
         public_node = [12, 13, 24, 22, 30, 31, 14, 15]
         selected_node = selected_node_plus + public_node
 
         return [node_msg_list[node_id] for node_id in selected_node]
 
-    def get_svip_node_msg_list(self):
+    def get_plus_plus_node_msg_list(self):
         cursor = self.get_cursor()
 
-        cursor.execute('''select node_gpu_msg from docker.gpu where node_gpu_msg <> "" ''')
+        cursor.execute('''select node_gpu_msg from docker.plus_gpu where node_gpu_msg <> "" ''')
         node_msg_list = cursor.fetchall()
-        node_msg_list = list(map(lambda x: json.loads(x[0]), node_msg_list))
+        node_msg_list = map(lambda x: json.loads(x[0]), node_msg_list)
 
         self.commit()
-        selected_node_svip = [0,1,4,16,17,18,19,23,27,28]
-        public_node = [12,13,24,22,30,31,14,15]
+        return node_msg_list
+
+    def get_svip_node_msg_list(self):
+        node_msg_list = self.get_node_msg_list()
+        selected_node_svip = [0, 1, 4, 16, 17, 18, 19, 23, 27, 28]
+        public_node = [12, 13, 24, 22, 30, 31, 14, 15]
         selected_node = selected_node_svip + public_node
 
         return [node_msg_list[node_id] for node_id in selected_node]
+
     '''
     for discuss
     '''
@@ -322,7 +314,7 @@ class DatabaseManager:
         cursor = self.get_cursor()
 
         cursor.execute("INSERT INTO docker.discuss(title, content, create_date) VALUES ('%s', '%s','%s')" % (
-        title, content, create_date))
+            title, content, create_date))
         self.commit()
 
     def add_answer(self, question_id, content, create_date):
@@ -337,7 +329,7 @@ class DatabaseManager:
 
         cursor.execute(
             "INSERT INTO docker.answer(question_id, floor,content, create_date) VALUES (%d, %d, '%s','%s')" % (
-            question_id, floor, content, create_date))
+                question_id, floor, content, create_date))
         self.commit()
 
     def get_all_questions(self):
