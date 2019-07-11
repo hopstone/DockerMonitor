@@ -176,5 +176,5 @@ class CS280PermissionHandler(BaseHandler):
         self.log += 'Create %s done! port: %d\n' % (cname, container_port)
         print('add nodes permission successfully')
         self.log += 'add nodes permission on %s successfully\n' % str(node_list)
-        print('please login by "ssh root@10.19.124.11 -p %d"\ndefault passwd: plus' % container_port)
-        self.log += 'please login by "ssh root@10.19.124.11 -p %d"\ndefault passwd: plus' % container_port
+        print('please login by "ssh root@10.15.89.41 -p %d"\ndefault passwd: plus' % container_port)
+        self.log += 'please login by "ssh root@10.15.89.41 -p %d"\ndefault passwd: plus' % container_port

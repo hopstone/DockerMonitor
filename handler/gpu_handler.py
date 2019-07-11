@@ -13,6 +13,7 @@ class GpuHandler(BaseHandler):
     def get(self):
         node_id = int(self.get_argument('id', default=-1))
         if node_id == -1:
+            # node_gpu_msg_list = self.db.get_node_msg_list_with_chs_name()
             node_gpu_msg_list = self.db.get_node_msg_list()
             self.render('../html/gpu.html', node_gpu_msg_list=node_gpu_msg_list, cur_user=self.get_current_user())
         else:
@@ -66,3 +67,8 @@ class SVIPGpuHandler(BaseHandler):
     def get(self):
         node_gpu_msg_list = self.db.get_svip_node_msg_list()
         self.render('../html/svip_gpu.html', node_gpu_msg_list=node_gpu_msg_list, cur_user=self.get_current_user())
+
+class SVIPSVIPGpuHandler(BaseHandler):
+    def get(self):
+        node_gpu_msg_list = self.db.get_svip_svip_node_msg_list()
+        self.render('../html/svip_svip_gpu.html', node_gpu_msg_list=node_gpu_msg_list, cur_user=self.get_current_user())

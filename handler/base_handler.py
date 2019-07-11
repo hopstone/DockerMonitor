@@ -33,6 +33,10 @@ class BaseHandler(tornado.web.RequestHandler):
         return node_list
 
     @classmethod
+    def get_website_ip(self):
+        return '10.15.89.41'
+
+    @classmethod
     def create_container_on_remote(self, node_name, docker_type, cname, container_port, advisor):
         container_name = '%s-%s' % (cname, node_name)
         addition_str = utils.ContainerAdditionStr(node_name, advisor, cname).get_additional_str()
@@ -59,7 +63,7 @@ class BaseHandler(tornado.web.RequestHandler):
                   "-v /public/docker/%s/usr:/usr "
                   # "--privileged=true "
                   # "--volume /run/dbus/system_bus_socket:/run/dbus/system_bus_socket:ro "
-                  "--restart unless-stopped "
+                  # "--restart unless-stopped "
                   "--add-host %s:127.0.0.1 "
                   "--add-host node01:10.10.10.101 "
                   "--add-host node02:10.10.10.102 "

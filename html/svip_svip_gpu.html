@@ -204,9 +204,9 @@
         <table class="table table-striped table-condensed">
             <tr>
                 <th class="th-id">#</th>
-                {% if cur_user != None%}
-                <th class="th-clear">Clear</th>
-                {% end %}
+                <!--{% if cur_user != None%}-->
+                <!--<th class="th-clear">Clear</th>-->
+                <!--{% end %}-->
                 <th class="th-name">Name</th>
                 <th class="th-mem">Memory</th>
                 <th class="th-usage">GPU</th>
@@ -216,14 +216,14 @@
             {% for gpu_msg in node_gpu_msg['gpus'] %}
             <tr>
                 <td>{%raw gpu_msg['index'] %}</td>
-                {% if cur_user != None%}
-                <td>
-                    <button type="button" class="btn btn-danger btn-xs"
-                            id="clear-btn-{%raw node_gpu_msg['hostname']%}-{%raw gpu_msg['index']%}"
-                            onclick="clear_card('{%raw node_gpu_msg['hostname']%}', '{%raw gpu_msg['index']%}')">Clear
-                    </button>
-                </td>
-                {% end %}
+                <!--{% if cur_user != None%}-->
+                <!--<td>-->
+                    <!--<button type="button" class="btn btn-danger btn-xs"-->
+                            <!--id="clear-btn-{%raw node_gpu_msg['hostname']%}-{%raw gpu_msg['index']%}"-->
+                            <!--onclick="clear_card('{%raw node_gpu_msg['hostname']%}', '{%raw gpu_msg['index']%}')">Clear-->
+                    <!--</button>-->
+                <!--</td>-->
+                <!--{% end %}-->
                 <td>
                     <span class="hidden-xs">{% raw gpu_msg['name'] %}</span>
                 </td>

@@ -144,7 +144,7 @@
                 <a href="https://github.com/piaozhx/DockerMonitor/issues" target="_blank">Discuss</a>
             </li>
             <li>
-                <a href="http://10.19.124.11:8898" target="_blank">Doc</a>
+                <a href="http://10.15.89.41:8898" target="_blank">Doc</a>
             </li>
             <li>
                 <a href="/gpu">GPU Status</a>
@@ -198,14 +198,6 @@
             {% for gpu_msg in node_gpu_msg['gpus'] %}
             <tr>
                 <td>{%raw gpu_msg['index'] %}</td>
-                {% if cur_user != None%}
-                <td>
-                    <button type="button" class="btn btn-danger btn-xs"
-                            id="clear-btn-{%raw node_gpu_msg['hostname']%}-{%raw gpu_msg['index']%}"
-                            onclick="clear_card('{%raw node_gpu_msg['hostname']%}', '{%raw gpu_msg['index']%}')">Clear
-                    </button>
-                </td>
-                {% end %}
                 <td>
                     <span class="hidden-xs">{% raw gpu_msg['name'] %}</span>
                 </td>

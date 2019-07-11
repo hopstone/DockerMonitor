@@ -39,6 +39,8 @@ class DeleteHandler(BaseHandler):
 
         print('rm -rf /public/docker/%s...' % cname)
         os.system('ssh str01 rm -rf /public/docker/%s' % cname)
+
+        print('rm -rf /p300/docker/%s' % cname)
         os.system('rm -rf /p300/docker/%s' % cname)
         print('delete account successfully!!!')
 

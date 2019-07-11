@@ -155,13 +155,13 @@
                 <a href="/permission">User Permission</a>
             </li>
             <!--<li>-->
-                <!--<a href="/cs280_permission">CS280 User Permission</a>-->
+            <!--<a href="/cs280_permission">CS280 User Permission</a>-->
             <!--</li>-->
             <li>
                 <a href="https://github.com/piaozhx/DockerMonitor/issues" target="_blank">Discuss</a>
             </li>
             <li>
-                <a href="http://10.19.124.11:8898" target="_blank">Doc</a>
+                <a href="http://10.15.89.41:8898" target="_blank">Doc</a>
             </li>
             <li class="active">
                 <a href="/gpu">GPU Status</a>
@@ -195,7 +195,7 @@
 
 <div class="container">
     <div class="row clearfix">
-        <h2>AI Cluster (10.19.124.11) (node01 ~ node35)</h2>
+        <h2>AI Cluster (10.15.89.41) (node01 ~ node35)</h2>
 
         {% for node_gpu_msg in node_gpu_msg_list %}
 
@@ -249,7 +249,8 @@
                     {% for process in gpu_msg['processes'] %}
                     <span class="hidden-xs process-content">
                         <span class="process label label-primary" data-toggle="tooltip" data-placement="top" data-html="true"
-                              title="{% raw '(%s) Mem: %d Mib <br/> 运行时间: %s'%(process['command'], process['gpu_memory_usage'], process['runtime']) %}">{%raw process['pid'] %}@<span
+                              title="{% raw '(%s) Mem: %d Mib <br/> 运行时间: %s'%(process['command'], process['gpu_memory_usage'], process['runtime']) %}">
+                             {%raw process['pid'] %}@<span
                                 class="user">{%raw process['username'] %}</span> ({% raw int(process['gpu_memory_usage'] / gpu_msg['memory.total'] * 100)%}%)</span>
                                 </span>
                     <span class="visible-xs-inline">

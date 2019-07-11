@@ -12,7 +12,7 @@ For What Purpose You Apply for Above Resources
 Access AI Cluster
 After your request is comfirmed, you’ll receive a letter containing username and initial password you need to login AI cluster. To access AI cluster, just type the following command in your favorate terminal:
 
-ssh username@10.19.124.11
+ssh username@10.15.89.41
 For Windows users, MobaXterm is the recommanded terminal.
 
 You will be asked for your password to continue.
@@ -90,11 +90,11 @@ then
 fi
 Then user should re-login AI cluster with
 
-ssh -X username@10.19.124.11
+ssh -X username@10.15.89.41
 where the option -X enables X11 forwarding feature. Now you can feel free to run graphics applications, for example, you can try to run matlab and you will see matlab main window on your local PC. The ssh X11 forwarding can be chained, for example, it’s possible to run GUI applications on nodes other than admin node.
 
 # on your local PC
-ssh -X username@10.19.124.11
+ssh -X username@10.15.89.41
 # on admin node
 ssh -X node01
 # then you can run GUI applications like matlab on node01

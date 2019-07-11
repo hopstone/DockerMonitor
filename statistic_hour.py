@@ -16,33 +16,41 @@ def get_date_list():
             '2019-04-03', '2019-04-04']
 
 
+def get_hour_list():
+    return list(range(0, 24))
 
 
-def get_one_node_gpu_usage_info(db, node_id, start_date, end_date):
+def get_one_node_gpu_usage_info(db, node_id, start_date, end_date, hour):
     cursor = db.get_cursor()
     # time_condition = " AND query_time >= '%s' AND query_time <= '%s'"
+
+    if hour == 23:
+        end_hour = '23:59:59'
+    else:
+        end_hour = '%.2d' % (hour + 1)
 
     cursor.execute("SELECT * FROM gpu_history "
                    "WHERE node_id = " + str(node_id) +
                    # " AND query_time >= DATE_SUB(CURDATE(), INTERVAL 1 DAY)"
                    # " AND query_time >= DATE_SUB(CURDATE(), INTERVAL 1 DAY)"
-                   " AND query_time >= '%s' "
-                   " AND query_time < '%s' "
+                   " AND query_time >= '%s %.2d' "
+                   " AND query_time < '%s %s' "
                    # "AND DATE_FORMAT(query_time, '%i') % 15 = 0 "\
-                   " AND DATE_FORMAT(query_time, '%%s') = 0 " % (start_date, end_date)
+                   " AND DATE_FORMAT(query_time, '%%s') = 0 " % (start_date, hour, end_date, end_hour)
                    )
     res_list = cursor.fetchall()
 
     res_num = len(res_list)
     print(res_num)
+
+    if node_id in [13, 14, 25, 26]:
+        gpu_num = 8
+    else:
+        gpu_num = 4
+
     if res_num == 0:
-        if node_id in [13, 14, 26]:
-            gpu_num = 8
-        else:
-            gpu_num = 4
         return [{'avg_gpu_utils': 0, 'avg_mem_used': 0, 'user_dict': {}} for _ in range(gpu_num)]
 
-    gpu_num = len(json.loads(res_list[0][1])['gpus'])
     gpu_stat_list = [{'avg_gpu_utils': 0, 'avg_mem_used': 0, 'user_dict': {}} for _ in range(gpu_num)]
 
     for res in res_list:
@@ -84,70 +92,77 @@ def main():
     stat_node_id = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 27, 28, 29, 30, 31, 32, 33, 34, 35]
     # stat_node_id = [1]
     date_list = get_date_list()
+    hour_list = get_hour_list()
 
     wb = xlsxwriter.Workbook('gpu_stat.xlsx')
-    gpu_utils_sheet = wb.add_worksheet('gpu_utils')
-    user_num_sheet = wb.add_worksheet('user_num')
+    # gpu_utils_sheet = wb.add_worksheet('gpu_utils')
+    # user_num_sheet = wb.add_worksheet('user_num')
 
     """
     sheet title
     """
-    gpu_utils_sheet.write(0, 0, 'node')
-    gpu_utils_sheet.write(0, 1, 'gpu_id')
-    for i in range(len(date_list) - 1):
-        gpu_utils_sheet.write(0, 2 + i, date_list[i])
+    gpu_utils_sheet_list = []
+    for date_idx in range(len(date_list) - 1):
+        gpu_utils_sheet = wb.add_worksheet('gpu_utils_%s' % date_list[date_idx])
+        gpu_utils_sheet.write(0, 0, 'node')
+        gpu_utils_sheet.write(0, 1, 'gpu_id')
+        for i, hour in enumerate(hour_list):
+            gpu_utils_sheet.write(0, 2 + i, hour)
+        gpu_utils_sheet_list.append(gpu_utils_sheet)
 
-    user_num_sheet.write(0, 0, 'node')
-    for i in range(len(date_list) - 1):
-        user_num_sheet.write(0, 1 + i, date_list[i])
+    # user_num_sheet.write(0, 0, 'node')
+    # for i in range(len(date_list) - 1):
+    #     user_num_sheet.write(0, 1 + i, date_list[i])
 
     """
     sheet content
     """
-    for i in range(len(date_list) - 1):
+    for date_idx in range(len(date_list) - 1):
         cluster_gpu_stat_list = []
+        gpu_utils_sheet = gpu_utils_sheet_list[date_idx]
 
         row_cursor = 1
         for node_idx, node_id in enumerate(stat_node_id):
-            print('-' * 30, node_id, '-', date_list[i], '-', date_list[i + 1], '-' * 30)
-            gpu_stat_list = get_one_node_gpu_usage_info(db, node_id, date_list[i], date_list[i + 1])
-            cluster_gpu_stat_list.append(gpu_stat_list)
-            print(gpu_stat_list)
+            print('-' * 30, node_id, '-', date_list[date_idx], '-', date_list[date_idx + 1], '-' * 30)
+            for hour in hour_list:
+                gpu_stat_list = get_one_node_gpu_usage_info(db, node_id, date_list[date_idx], date_list[date_idx + 1], hour)
+                cluster_gpu_stat_list.append(gpu_stat_list)
+                print(gpu_stat_list)
 
-            node_user_dict = {}
-            for gpu_id, gpu_stat in enumerate(gpu_stat_list):
-                # gpu utils sheet
-                gpu_utils_sheet.write(row_cursor + gpu_id, 0, node_id)
-                gpu_utils_sheet.write(row_cursor + gpu_id, 1, gpu_id)
-                gpu_utils_sheet.write(row_cursor + gpu_id, 2 + i, gpu_stat['avg_gpu_utils'])
+                node_user_dict = {}
+                for gpu_id, gpu_stat in enumerate(gpu_stat_list):
+                    # gpu utils sheet
+                    gpu_utils_sheet.write(row_cursor + gpu_id, 0, node_id)
+                    gpu_utils_sheet.write(row_cursor + gpu_id, 1, gpu_id)
+                    gpu_utils_sheet.write(row_cursor + gpu_id, 2 + hour, gpu_stat['avg_gpu_utils'])
 
-                # user num sheet
-                gpu_user_dict = gpu_stat['user_dict']
-                for user_name, user_count in gpu_user_dict.items():
-                    if user_name not in node_user_dict:
-                        node_user_dict[user_name] = user_count
-                    else:
-                        node_user_dict[user_name] += user_count
+                    # user num sheet
+                    gpu_user_dict = gpu_stat['user_dict']
+                    for user_name, user_count in gpu_user_dict.items():
+                        if user_name not in node_user_dict:
+                            node_user_dict[user_name] = user_count
+                        else:
+                            node_user_dict[user_name] += user_count
 
             row_cursor += len(gpu_stat_list)
-            user_num_sheet.write(1 + node_idx, 0, node_id)
-            user_num_sheet.write(1 + node_idx, 1 + i, len(node_user_dict))
+            # user_num_sheet.write(1 + node_idx, 0, node_id)
+            # user_num_sheet.write(1 + node_idx, 1 + i, len(node_user_dict))
 
     wb.close()
 
-        # cluster_user_dict = {}
-        # for gpu_stat_list in cluster_gpu_stat_list:
-        #     for gpu_stat in gpu_stat_list:
-        #         gpu_user_dict = gpu_stat['user_dict']
-        #
-        #         for user_name, user_count in gpu_user_dict.items():
-        #             if user_name not in cluster_user_dict:
-        #                 cluster_user_dict[user_name] = user_count
-        #             else:
-        #                 cluster_user_dict[user_name] += user_count
+    # cluster_user_dict = {}
+    # for gpu_stat_list in cluster_gpu_stat_list:
+    #     for gpu_stat in gpu_stat_list:
+    #         gpu_user_dict = gpu_stat['user_dict']
+    #
+    #         for user_name, user_count in gpu_user_dict.items():
+    #             if user_name not in cluster_user_dict:
+    #                 cluster_user_dict[user_name] = user_count
+    #             else:
+    #                 cluster_user_dict[user_name] += user_count
 
-        # print(len(cluster_user_dict))
-        # print(sorted(list(cluster_user_dict.items()), key=lambda x: x[1], reverse=True))
+    # print(len(cluster_user_dict))
+    # print(sorted(list(cluster_user_dict.items()), key=lambda x: x[1], reverse=True))
 
 
 if __name__ == '__main__':

@@ -28,8 +28,8 @@ class ContainerAdditionStr:
         '''
         restrict admin memory usage
         '''
-        if self.node_name == 'admin':
-            addition_str += " -m 4G --memory-swap 8G --memory-reservation 2G "
+        # if self.node_name == 'admin':
+        #     addition_str += " -m 4G --memory-swap 8G --memory-reservation 2G "
 
         return addition_str
 
@@ -51,6 +51,9 @@ class ContainerAdditionStr:
         elif self.username == "piaozx":
             addition_str += " -v /p300/docker/liuwen:/p300_liuwen "
             addition_str += " -v /p300/docker/xuyy:/p300_xuyy "
+            addition_str += " -v /p300/docker/liuyf:/p300_liuyf "
+        elif self.username == 'liuwen':
+            addition_str += " -v /p300/docker/piaozx:/p300_piaozx"
 
         return addition_str
 

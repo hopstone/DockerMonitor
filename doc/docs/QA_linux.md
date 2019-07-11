@@ -3,12 +3,12 @@
 
 Copy local folder `/home/username/local-dir` to AI cluster directory `/home/username/`:
 ```
-scp -P 12345 -r /home/username/local-dir root@10.19.124.11:/home/username/
+scp -P 12345 -r /home/username/local-dir root@10.15.89.41:/home/username/
 ```
 
 Copy file `/home/username/project1/result.txt` from AI cluster to path `/home/username/results` on local PC:
 ```
-scp -P 12345 root@10.19.124.11:/home/username/project1/result.txt /home/username/results/
+scp -P 12345 root@10.15.89.41:/home/username/project1/result.txt /home/username/results/
 ```
 
 ## 如何查看GPU使用情况?
@@ -48,7 +48,7 @@ Mon Aug 27 12:10:25 2018
 +-----------------------------------------------------------------------------+
 ```
 
-显然, 这个工具只能显示一些基本信息, 一些你更关心的信息(谁在跑程序? 跑了多久了?)可以从[AI集群GPU Status](http://10.19.124.11:8899/gpu)获取:
+显然, 这个工具只能显示一些基本信息, 一些你更关心的信息(谁在跑程序? 跑了多久了?)可以从[AI集群GPU Status](http://10.15.89.41:8899/gpu)获取:
 ![](img/gpu_status.png)
 
 

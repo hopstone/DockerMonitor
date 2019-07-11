@@ -19,13 +19,13 @@ admin_open_port: 31000-31009
 
 接下来我们用ssh登录即可(注意, 登录时用户名为`root`):
 ```
-ssh root@10.19.124.11 -p 22100
+ssh root@10.15.89.41 -p 22100
 ```
 windows上的cmd默认没有ssh, 在这里推荐使用`WSL`(Windows Subsystem for Linux), 具体网上教程用很多, 不再赘述.
 ```bash
 # piaozhx @ pzx-mbp in ~ [18:43:17]
-$ ssh root@10.19.124.11 -p 22100
-root@10.19.124.11's password:
+$ ssh root@10.15.89.41 -p 22100
+root@10.15.89.41's password:
 Welcome to Ubuntu 16.04.4 LTS (GNU/Linux 3.10.0-514.16.1.el7.x86_64 x86_64)
 
  * Documentation:  https://help.ubuntu.com
