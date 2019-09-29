@@ -42,3 +42,13 @@ Host node48
     Hostname 10.10.10.148
     Port user_port
     User root
+
+Host node49
+    Hostname 10.10.10.149
+    Port user_port
+    User root
+
+Host node50
+    Hostname 10.10.10.150
+    Port user_port
+    User root

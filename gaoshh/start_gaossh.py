@@ -11,21 +11,16 @@ import os
 from db.db_manager import DatabaseManager
 from handler.base_handler import BaseHandler
 from tqdm import tqdm
+from utils.utils import ContainerAdditionStr
 import pathlib
 
 
-class ContainerAdditionStr:
+class GaoshhContainerAdditionStr(ContainerAdditionStr):
 
     def __init__(self, node_name, advisor, cname):
-        self.node_name = node_name
-        self.advisor = advisor
-        self.group_mapping = {
-            '何旭明': 'plus_group',
-            '高盛华': 'svip_group'
-        }
-        self.username = cname
+        super().__init__(node_name, advisor, cname)
 
-    def get_node_addition_str(self):
+    def get_gaoshh_node_addition_str(self):
         addition_str = ""
 
         '''
@@ -53,22 +48,12 @@ class ContainerAdditionStr:
             addition_str += " -v /home:/old_home "
 
         if self.node_name == 'node47':
-            addition_str += " -v /public:/public "
-        if self.node_name == 'node48':
-            addition_str += " -v /public:/public "
+            addition_str += " -v /old_public:/old_public"
 
-        return addition_str
-
-    def get_advisor_addition_str(self):
-        addition_str = ""
-        return addition_str
-
-    def get_user_addition_str(self):
-        addition_str = ""
         return addition_str
 
     def get_additional_str(self):
-        str = self.get_node_addition_str() + self.get_advisor_addition_str() + self.get_user_addition_str()
+        str = self.get_node_addition_str() + self.get_advisor_addition_str() + self.get_user_addition_str() + self.get_gaoshh_node_addition_str()
         print(str)
         return str
 
@@ -82,7 +67,7 @@ def rm_container_on_remote(node_name, username):
 
 def create_container_on_remote(node_name, docker_type, cname, container_port, advisor):
     container_name = '%s-%s' % (cname, node_name)
-    addition_str = ContainerAdditionStr(node_name, advisor, cname).get_additional_str()
+    addition_str = GaoshhContainerAdditionStr(node_name, advisor, cname).get_additional_str()
 
     memory_size = os.popen('''ssh %s  free -h | head -n 2 | tail -n 1 | awk -F' ' '{print $2}' ''' % node_name).read().strip()
     memory_unit = memory_size[-1]
@@ -94,14 +79,16 @@ def create_container_on_remote(node_name, docker_type, cname, container_port, ad
               "%s run "
               "--name %s "
               "--network=host "
-              "-v /AI_public/docker/%s/bin:/bin "
-              "-v /AI_public/docker/%s/etc:/etc "
-              "-v /AI_public/docker/%s/lib:/lib "
-              "-v /AI_public/docker/%s/lib64:/lib64 "
-              "-v /AI_public/docker/%s/opt:/opt "
-              "-v /AI_public/docker/%s/root:/root "
-              "-v /AI_public/docker/%s/sbin:/sbin "
-              "-v /AI_public/docker/%s/usr:/usr "
+              "-v /p300/docker/%s:/p300 "
+              "-v /p300/datasets:/datasets:ro "
+              "-v /public/docker/%s/bin:/bin "
+              "-v /public/docker/%s/etc:/etc "
+              "-v /public/docker/%s/lib:/lib "
+              "-v /public/docker/%s/lib64:/lib64 "
+              "-v /public/docker/%s/opt:/opt "
+              "-v /public/docker/%s/root:/root "
+              "-v /public/docker/%s/sbin:/sbin "
+              "-v /public/docker/%s/usr:/usr "
               # "--privileged=true "
               # "--volume /run/dbus/system_bus_socket:/run/dbus/system_bus_socket:ro "
               # "--restart unless-stopped "
@@ -154,6 +141,8 @@ def create_container_on_remote(node_name, docker_type, cname, container_port, ad
               "--add-host node46:10.10.10.146 "
               "--add-host node47:10.10.10.147 "
               "--add-host node48:10.10.10.148 "
+              "--add-host node49:10.10.10.149 "
+              "--add-host node50:10.10.10.150 "
               "--add-host admin:10.10.10.100 "
               "--shm-size=%s "
               "%s "
@@ -161,7 +150,7 @@ def create_container_on_remote(node_name, docker_type, cname, container_port, ad
               "-d "
               "deepo_plus "
               "/usr/sbin/sshd -p %d -D" % (
-                  node_name, docker_type, container_name, cname, cname, cname, cname, cname, cname, cname, cname, container_name, shm_size,
+                  node_name, docker_type, container_name, cname, cname, cname, cname, cname, cname, cname, cname, cname, container_name, shm_size,
                   addition_str, container_name, container_port))
     print("create container on %s successful!" % node_name)
 
@@ -170,8 +159,8 @@ def main():
     db = DatabaseManager()
     user_info_list = db.get_all_user_info()
     # permission_list = ['node40', 'node41', 'node42', 'node43', 'node44', 'node45', 'node46', 'node47', 'node48']
-    permission_list = ['node40', 'node41', 'node42', 'node43', 'node44', 'node46']
-    # permission_list = ['node48']
+    # permission_list = ['node40', 'node41', 'node42', 'node43', 'node44', 'node46']
+    permission_list = ['node47']
 
     """
     gaossh permission
@@ -185,7 +174,7 @@ def main():
         if advisor not in ['高盛华']:
             continue
 
-        if cname not in ['liandz']:
+        if cname not in ['piaozx']:
             continue
 
         for node_name in permission_list:
@@ -196,6 +185,7 @@ def main():
 
             print("create %s-%s successfully." % (cname, node_name))
 
+        continue
         os.system("cp gaoshh/gaossh_node.txt gaoshh/tmp.txt")
         os.system('sed -i "s/user_port/%d/g" gaoshh/tmp.txt' % (container_port))
         os.system('cat gaoshh/tmp.txt >>  /public/docker/%s/root/.ssh/config' % (cname))
