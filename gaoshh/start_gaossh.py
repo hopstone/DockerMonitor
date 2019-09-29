@@ -31,6 +31,27 @@ class ContainerAdditionStr:
         '''
         public
         '''
+        if self.node_name == 'node40':
+            addition_str += " -v /new_disk1:/new_disk1 "
+            addition_str += " -v /new_disk2:/new_disk2 "
+            addition_str += " -v /ssd:/ssd "
+            addition_str += " -v /home:/old_home "
+        if self.node_name == 'node42':
+            addition_str += " -v /new_disk1:/new_disk1 "
+            addition_str += " -v /new_disk2:/new_disk2 "
+            addition_str += " -v /ssd:/ssd "
+            addition_str += " -v /home:/old_home "
+        if self.node_name == 'node43':
+            addition_str += " -v /new_disk1:/new_disk1 "
+            addition_str += " -v /new_disk2:/new_disk2 "
+            addition_str += " -v /ssd:/ssd "
+            addition_str += " -v /home:/old_home "
+        if self.node_name == 'node44':
+            addition_str += " -v /new_disk1:/new_disk1 "
+            addition_str += " -v /new_disk2:/new_disk2 "
+            addition_str += " -v /ssd:/ssd "
+            addition_str += " -v /home:/old_home "
+
         if self.node_name == 'node47':
             addition_str += " -v /public:/public "
         if self.node_name == 'node48':
@@ -120,6 +141,17 @@ def create_container_on_remote(node_name, docker_type, cname, container_port, ad
               "--add-host node33:10.10.10.133 "
               "--add-host node34:10.10.10.134 "
               "--add-host node35:10.10.10.135 "
+              "--add-host node36:10.10.10.136 "
+              "--add-host node37:10.10.10.137 "
+              "--add-host node38:10.10.10.138 "
+              "--add-host node39:10.10.10.139 "
+              "--add-host node40:10.10.10.140 "
+              "--add-host node41:10.10.10.141 "
+              "--add-host node42:10.10.10.142 "
+              "--add-host node43:10.10.10.143 "
+              "--add-host node44:10.10.10.144 "
+              "--add-host node45:10.10.10.145 "
+              "--add-host node46:10.10.10.146 "
               "--add-host node47:10.10.10.147 "
               "--add-host node48:10.10.10.148 "
               "--add-host admin:10.10.10.100 "
@@ -137,7 +169,8 @@ def create_container_on_remote(node_name, docker_type, cname, container_port, ad
 def main():
     db = DatabaseManager()
     user_info_list = db.get_all_user_info()
-    permission_list = ['node47', 'node48']
+    # permission_list = ['node40', 'node41', 'node42', 'node43', 'node44', 'node45', 'node46', 'node47', 'node48']
+    permission_list = ['node40', 'node41', 'node42', 'node43', 'node44', 'node46']
     # permission_list = ['node48']
 
     """
@@ -149,7 +182,10 @@ def main():
         container_port = user_info['container_port']
         advisor = user_info['advisor']
 
-        if cname not in ['liuwen']:
+        if advisor not in ['高盛华']:
+            continue
+
+        if cname not in ['liandz']:
             continue
 
         for node_name in permission_list:
@@ -160,6 +196,13 @@ def main():
 
             print("create %s-%s successfully." % (cname, node_name))
 
+        os.system("cp gaoshh/gaossh_node.txt gaoshh/tmp.txt")
+        os.system('sed -i "s/user_port/%d/g" gaoshh/tmp.txt' % (container_port))
+        os.system('cat gaoshh/tmp.txt >>  /public/docker/%s/root/.ssh/config' % (cname))
+        os.system("rm gaoshh/tmp.txt")
+
+    return
+
     """
     AI Cluster permission    
     """
@@ -169,7 +212,7 @@ def main():
         container_port = user_info['container_port']
         advisor = user_info['advisor']
 
-        if cname not in ['liuwen']:
+        if cname not in ['piaozx']:
             continue
 
         for permission_detail in user_info['permission']:
@@ -183,7 +226,6 @@ def main():
             BaseHandler.create_container_on_remote(node_name, docker_type, cname, container_port, advisor)
 
             print("create %s-%s successfully." % (cname, node_name))
-
 
 
 if __name__ == '__main__':

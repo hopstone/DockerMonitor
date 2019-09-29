@@ -27,7 +27,7 @@ theme:
     primary: 'teal'
     accent: 'red'
 
-dev_addr: 127.0.0.1:8898
+dev_addr: 0.0.0.0:8898
 
 markdown_extensions:
   - admonition

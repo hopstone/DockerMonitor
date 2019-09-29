@@ -18,9 +18,11 @@ DB_HOST = '10.15.89.41'
 DB_USERNAME = 'root'
 DB_PASSWOED = 'piaozx123'
 DB_NAME = 'docker'
-# WATCH_NODES_ID_LIST = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28]
+WATCH_NODES_ID_LIST = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28]
+
+
 # WATCH_NODES_ID_LIST = [7, 8, 9, 10, 11, 12, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28]
-WATCH_NODES_ID_LIST = [7, 8, 9, 10, 11, 12]
+# WATCH_NODES_ID_LIST = [7, 8, 9, 10, 11, 12]
 
 
 # WATCH_NODES_ID_LIST = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
@@ -63,7 +65,19 @@ def check_and_restart_pbs_task():
         run = node_run_list[node_id]
 
         if status == 'free' and run == 'C':
-            os.popen("qsub -N sist-gpu%.2d -q sist-gaoshh -l nodes=sist-gpu%.2d:ppn=1 -o /dev/null -e /dev/null gpu.pb" % (node_id, node_id))
+            os.popen("qsub -N sist-gpu%.2d -q sist -l nodes=sist-gpu%.2d:ppn=1 -o /dev/null -e /dev/null gpu.pb" % (node_id, node_id))
+
+
+def check_and_restart_all_on_bg():
+    # node status 'busy*' or 'free'
+    node_status_list = os.popen(" pestat | grep 'sist-gpu' | awk -F' ' '{print $2}' ").read().split()
+    node_status_list = [None] + node_status_list
+
+    for node_id in WATCH_NODES_ID_LIST:
+        status = node_status_list[node_id]
+
+        if status == 'free':
+            os.popen("qsub -N sist-gpu%.2d -q sist -l nodes=sist-gpu%.2d:ppn=1 -o /dev/null -e /dev/null gpu.pb" % (node_id, node_id))
 
 
 def main():
@@ -71,12 +85,13 @@ def main():
     cursor = conn.cursor()
 
     sqlite_conn = sqlite3.connect('gpu.sqlite')
+    check_and_restart_all_on_bg()
 
     while True:
 
         try:
             node_gpu_msg_list = get_node_msg_list(sqlite_conn)
-            check_and_restart_pbs_task()
+            # check_and_restart_pbs_task()
 
             print('-' * 20 + 'start' + '-' * 20)
             for node_id, node_gpu_msg in node_gpu_msg_list:

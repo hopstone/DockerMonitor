@@ -16,10 +16,13 @@ import time
 from config import DB_HOST, DB_NAME, DB_PASSWOED, DB_USERNAME
 from handler.base_handler import STANDARD_NODE_LIST
 
+NODE_LIST = ['node40', 'node41', 'node42', 'node43', 'node44', 'node45', 'node46', 'node47', 'node48']
+NODE_ID_LIST = [0, 1, 2, 3, 4, 5, 6, 7, 8]
 
-# NODE_LIST = ['ws62', 'ws63', 'ws64', 'ws65', 'rtx01', 'rtx02']
-NODE_LIST = ['node47', 'node48']
-NODE_ID_LIST = [4, 5]
+# NODE_LIST  = ['node40']
+# NODE_ID_LIST  = [0]
+
+
 # NODE_LIST = ['ws62']
 
 
@@ -27,7 +30,7 @@ def get_useful_gpu_msg(node_name, node_id):
     conn = pymysql.connect(DB_HOST, DB_USERNAME, DB_PASSWOED, DB_NAME, )
     cursor = conn.cursor()
     while True:
-        gpu_msg = os.popen('''ssh %s '/root/anaconda3/bin/python /root/svip_tools/get_gpu_msg.py' ''' % node_name).read().strip()
+        gpu_msg = os.popen('''ssh %s '/AI_public/anaconda3/bin/python /AI_public/DockerMonitor/gpu_tools/gaossh_get_gpu_msg.py' ''' % node_name).read().strip()
         cursor.execute("UPDATE docker.svip_gpu SET node_gpu_msg = '%s' WHERE node_id=%d" % (gpu_msg, node_id))
 
         try:

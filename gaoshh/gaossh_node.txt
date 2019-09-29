@@ -1,0 +1,44 @@
+Host node40
+    Hostname 10.10.10.140
+    Port user_port
+    User root
+
+Host node41
+    Hostname 10.10.10.141
+    Port user_port
+    User root
+
+Host node42
+    Hostname 10.10.10.142
+    Port user_port
+    User root
+
+Host node43
+    Hostname 10.10.10.143
+    Port user_port
+    User root
+
+Host node44
+    Hostname 10.10.10.144
+    Port user_port
+    User root
+
+Host node45
+    Hostname 10.10.10.145
+    Port user_port
+    User root
+
+Host node46
+    Hostname 10.10.10.146
+    Port user_port
+    User root
+
+Host node47
+    Hostname 10.10.10.147
+    Port user_port
+    User root
+
+Host node48
+    Hostname 10.10.10.148
+    Port user_port
+    User root

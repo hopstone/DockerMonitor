@@ -34,8 +34,9 @@ def get_user_name_and_run_time(pid):
 
     return user_name, run_time
 
+
 def main():
-    gpu_msg_list = os.popen("/public/anaconda3/bin/gpustat -p -u --json").read()
+    gpu_msg_list = os.popen("/AI_public/anaconda3/bin/gaossh_gpustat -p -u --json").read()
     gpu_msg_list = json.loads(gpu_msg_list)
 
     for gpu_msg in gpu_msg_list['gpus']:
@@ -63,8 +64,6 @@ def main():
     query_time = datetime.datetime.strptime(query_time, "%Y-%m-%dT%H:%M:%S")
     query_time = query_time.strftime('%Y-%m-%d %H:%M:%S')
     gpu_msg_list['query_time'] = query_time
-
-
 
     print(json.dumps(gpu_msg_list, ensure_ascii=False))
 
