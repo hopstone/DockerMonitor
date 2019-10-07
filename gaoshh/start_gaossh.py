@@ -158,9 +158,9 @@ def create_container_on_remote(node_name, docker_type, cname, container_port, ad
 def main():
     db = DatabaseManager()
     user_info_list = db.get_all_user_info()
-    # permission_list = ['node40', 'node41', 'node42', 'node43', 'node44', 'node45', 'node46', 'node47', 'node48']
+    permission_list = ['node40', 'node41', 'node42', 'node43', 'node44', 'node46', 'node47', 'node48', 'node49']
     # permission_list = ['node40', 'node41', 'node42', 'node43', 'node44', 'node46']
-    permission_list = ['node47']
+    # permission_list = ['node45']
 
     """
     gaossh permission
@@ -185,10 +185,9 @@ def main():
 
             print("create %s-%s successfully." % (cname, node_name))
 
-        continue
         os.system("cp gaoshh/gaossh_node.txt gaoshh/tmp.txt")
         os.system('sed -i "s/user_port/%d/g" gaoshh/tmp.txt' % (container_port))
-        os.system('cat gaoshh/tmp.txt >>  /public/docker/%s/root/.ssh/config' % (cname))
+        os.system('cat gaoshh/tmp.txt >  /public/docker/%s/root/.ssh/config' % (cname))
         os.system("rm gaoshh/tmp.txt")
 
     return

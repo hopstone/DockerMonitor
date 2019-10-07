@@ -67,9 +67,11 @@
         .th-id {
             width: 18px;
         }
+
         .th-clear {
             width: 70px;
         }
+
         .th-name {
             width: 180px;
         }
@@ -192,7 +194,12 @@
 
 <div class="container">
     <div class="row clearfix">
-        <h2>SVIP AI Cluster (10.15.89.41)</h2>
+        <h2>SVIP Cluster (10.15.89.41)
+            <small>
+                <a href="/svip_gpu">(点击切换到AI集群)</a>
+            </small>
+        </h2>
+
 
         {% for node_gpu_msg in node_gpu_msg_list %}
 
@@ -218,10 +225,10 @@
                 <td>{%raw gpu_msg['index'] %}</td>
                 <!--{% if cur_user != None%}-->
                 <!--<td>-->
-                    <!--<button type="button" class="btn btn-danger btn-xs"-->
-                            <!--id="clear-btn-{%raw node_gpu_msg['hostname']%}-{%raw gpu_msg['index']%}"-->
-                            <!--onclick="clear_card('{%raw node_gpu_msg['hostname']%}', '{%raw gpu_msg['index']%}')">Clear-->
-                    <!--</button>-->
+                <!--<button type="button" class="btn btn-danger btn-xs"-->
+                <!--id="clear-btn-{%raw node_gpu_msg['hostname']%}-{%raw gpu_msg['index']%}"-->
+                <!--onclick="clear_card('{%raw node_gpu_msg['hostname']%}', '{%raw gpu_msg['index']%}')">Clear-->
+                <!--</button>-->
                 <!--</td>-->
                 <!--{% end %}-->
                 <td>
